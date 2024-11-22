@@ -19,23 +19,47 @@
     </style>
 </head>
 <body>
-    <h1>Authorization Callback</h1>
-    <p>Processing your authorization...</p>
+    <h1>Processing Authorization...</h1>
+    <p id="message">Please wait while we process your request...</p>
     <pre id="output"></pre>
 
     <script>
         const params = new URLSearchParams(window.location.search);
-        const code = params.get('code');
-        const error = params.get('error');
-        const output = document.getElementById('output');
+        const code = params.get("code");
+        const error = params.get("error");
+        const output = document.getElementById("output");
+        const message = document.getElementById("message");
 
         if (code) {
-            output.textContent = `Authorization Code: ${code}`;
-            // TODO: Use the authorization code to fetch an access token via a backend server
+            // Send the authorization code to your Supabase function
+            fetch("https://ouauehtpqfvldbvsihpu.supabase.co/functions/v1/spotify-token", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ code }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.access_token) {
+                        message.textContent = "Authorization Successful!";
+                        output.textContent = `Access Token: ${data.access_token}\nRefresh Token: ${data.refresh_token}`;
+                        console.log("Access Token:", data.access_token);
+                    } else {
+                        message.textContent = "Authorization Failed.";
+                        output.textContent = `Error: ${JSON.stringify(data)}`;
+                    }
+                })
+                .catch((error) => {
+                    message.textContent = "An error occurred.";
+                    output.textContent = `Error: ${error.message}`;
+                });
         } else if (error) {
+            message.textContent = "Authorization Denied.";
             output.textContent = `Error: ${error}`;
         } else {
-            output.textContent = `No authorization code or error detected.`;
+            message.textContent = "No authorization code detected.";
+            output.textContent = "Ensure you followed the correct flow.";
         }
     </script>
 </body>
