@@ -3,49 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotify URI Generator</title>
+    <title>Spotify Auth Example</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 20px;
         }
-        .input-group {
-            margin: 20px 0;
-        }
-        input, button {
-            padding: 10px;
+        button {
+            padding: 10px 20px;
             font-size: 16px;
+            background-color: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
-        .output {
-            margin-top: 20px;
-            font-weight: bold;
+        button:hover {
+            background-color: #1AA34A;
         }
     </style>
 </head>
 <body>
-    <h1>Spotify URI Generator</h1>
-    <p>Enter a Spotify shareable link to get its URI.</p>
-
-    <div class="input-group">
-        <input type="text" id="spotifyLink" placeholder="Enter Spotify link here">
-        <button onclick="generateURI()">Generate URI</button>
-    </div>
-
-    <div class="output" id="output"></div>
+    <h1>Spotify API Authentication</h1>
+    <p>Click the button below to log in with Spotify and access its API:</p>
+    <button onclick="authenticate()">Log in with Spotify</button>
 
     <script>
-        function generateURI() {
-            const spotifyLink = document.getElementById('spotifyLink').value.trim();
-            const regex = /https:\/\/open\.spotify\.com\/(\w+)\/([a-zA-Z0-9]+)/;
+        const clientId = "16e639c9700c4580803f5b33e9a64006"; // Replace with your Spotify app's client ID
+        const redirectUri = "https://<username>.github.io/<repository>/callback.html"; // Replace with your callback URL
+        const scopes = "user-read-private user-read-email";
 
-            if (regex.test(spotifyLink)) {
-                const [, type, id] = spotifyLink.match(regex);
-                const spotifyURI = `spotify:${type}:${id}`;
-                document.getElementById('output').innerText = `Generated URI: ${spotifyURI}`;
-            } else {
-                document.getElementById('output').innerText = 'Invalid Spotify link. Please try again.';
-            }
+        function authenticate() {
+            const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
+            window.location.href = authUrl;
         }
     </script>
 </body>
