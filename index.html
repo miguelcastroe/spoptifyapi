@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify URI Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .input-group {
+            margin: 20px 0;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        .output {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Spotify URI Generator</h1>
+    <p>Enter a Spotify shareable link to get its URI.</p>
+
+    <div class="input-group">
+        <input type="text" id="spotifyLink" placeholder="Enter Spotify link here">
+        <button onclick="generateURI()">Generate URI</button>
+    </div>
+
+    <div class="output" id="output"></div>
+
+    <script>
+        function generateURI() {
+            const spotifyLink = document.getElementById('spotifyLink').value.trim();
+            const regex = /https:\/\/open\.spotify\.com\/(\w+)\/([a-zA-Z0-9]+)/;
+
+            if (regex.test(spotifyLink)) {
+                const [, type, id] = spotifyLink.match(regex);
+                const spotifyURI = `spotify:${type}:${id}`;
+                document.getElementById('output').innerText = `Generated URI: ${spotifyURI}`;
+            } else {
+                document.getElementById('output').innerText = 'Invalid Spotify link. Please try again.';
+            }
+        }
+    </script>
+</body>
+</html>
